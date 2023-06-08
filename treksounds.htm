@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name='keywords' content='Trek Sounds'>
+<meta name="description" content="Trek Sounds">
+<link rel='shortcut icon' href='https://bedno.com/media/trek/treksounds.ico'>
+<link rel="apple-touch-icon" sizes="64x64" href="https://bedno.com/media/trek/treksounds.png">
+<meta name="viewport" content="initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="Trek Sounds">
+<meta property="og:description" content="Trek Sounds">
+<meta property="og:image" content="https://bedno.com/media/trek/treksounds.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://Bedno.com/trek">
+<meta property="og:site_name" content="Star Trek Sound Effects Padd">
+<meta http-equiv="cache-control" content="max-age=300">
+<head>
+<title>Trek Sounds</title>
+<script>
+var ResizeTimer = null;
+var WinWidPhys = 0; var WinHgtPhys = 0; var ButtonWid = 0;  var ButtonHgt = 0;
+var ScanTimer = null;
+var BlinkTimer = null;
+var BtnTimer = null;
+var ScanIdx = 99;
+var Recents = Array('','');  var RecentsIdx = 0;  var RecentsIns = "";  var RecentPrev = "";  var RecentName = "";
+var SoundCurr = "";  var SoundPrev = "";
+var Sound = Array();
+var SoundNames = new Array( 'Trek-Alert', 'Trek-Attention', 'Trek-Door',
+               'Trek-Hailing', 'Trek-Holodeck', 'Trek-Phaser',
+               'Trek-Photon', 'Trek-Scanning', 'Trek-Transporter',
+               'Trek-Warp', 'Trek-Whales', 'Trek-Whistle' );
+var BlinkColors = new Array('#00C000', '#000000');
+var ButtonColors = new Array( '#FFCCC6', '#FAA892', '#FD827D', '#D7656D', // Plums
+                              '#CBDFFB', '#ADCCF8', '#9B9EFB', '#7D83FF', // Cyan
+                              '#FFFECE', '#FEFFA7', '#FFFF33', '#E3E600' ); // Yellow
+var ButtonColor = 0;
+
+</script>
+</head>
+<body style="margin-top:0px; margin-left:0px; margin-bottom:10px; margin-right:4px; overflow:hidden; background-color:#000000">
+<table cellspacing=0 cellpadding=0 style="margin:0px; padding:0px; border:none; width:100%; background-color:#000000;">
+
+<tr style="background-color:#FFAD01;">
+<td style="border-radius:28px 0px 0px 0px; background-color:#FFAD01; width:28px"> </td>
+<td style="background-color:#FFAD01; width:100%"> </td>
+<td style="background-color:#000000;">
+ <a href="#" onClick="alert('Star Trek Sound Effects - By Andrew Bedno - AndrewBedno.com');" style="text-decoration:none;"><font face="Arial" size=5 color="#9EA1D8"><b>&nbsp;TREK&nbsp;SOUNDS&nbsp;</b></font></a>
+</td>
+<td style="border-radius:0px 28px 0px 0px; background-color:#FFAD01; width:38px; padding-left:38px;"> </td>
+</tr>
+
+<tr style="background-color:#000000;">
+<td style="background-color:#FFAD01; width:28px">
+  <table cellspacing=0 cellpadding=0 style="margin:4px; padding:0; width:10px; border:none;">
+    <tr style="height:32px" ID="b1"><td>&nbsp;</td></tr>
+    <tr style="height:32px"><td>&nbsp;</td></tr>
+    <tr style="height:32px" ID="b2"><td>&nbsp;</td></tr>
+    <tr style="height:32px"><td>&nbsp;</td></tr>
+    <tr style="height:32px" ID="b3"><td>&nbsp;</td></tr>
+  </table>
+</td>
+<td colspan=3>
+  <span id="SoundSelectDiv" style="height:100%; width:100%;"></span>
+</td>
+</tr>
+
+<tr style="background-color:#FFAD01;">
+  <td style="background-color:#FFAD01;"> </td>
+  <td colspan=3 style="width:100%; background-color:#000000">
+    <center>
+	<table cellspacing=0 cellpadding=0 style="margin-top:0; padding:0; width:77%; border:none;">
+    <tr style="padding:0; margin-top:4px; height:10px"><td ID="sl7">&nbsp;</td><td ID="sl6">&nbsp;</td><td ID="sl5">&nbsp;</td><td ID="sl4">&nbsp;</td><td ID="sl3">&nbsp;</td><td ID="sl2">&nbsp;</td><td ID="sl1">&nbsp;</td>
+      <td ID="sr1">&nbsp;</td><td ID="sr2">&nbsp;</td><td ID="sr3">&nbsp;</td><td ID="sr4">&nbsp;</td><td ID="sr5">&nbsp;</td><td ID="sr6">&nbsp;</td><td ID="sr7">&nbsp;</td></tr>
+    </table>
+	</center>
+  </td>
+</tr>
+
+<tr style="height:28px; background-color:#FFAD01;">
+<td colspan=4 style="border-radius:0px 0px 28px 28px; background-color:#FFAD01;">
+<center><a href="https://bedno.com/trek" style="text-decoration:none;"><font face="Arial" size=2 color="#000000">BEDNO.COM/TREK</font></a><center>
+</td></tr>
+
+</table>
+
+<script>
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+
+function DoResize () {
+  WinWidPhys = window.innerWidth && document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+  WinHgtPhys = window.innerHeight && document.documentElement.clientHeight ? Math.min(window.innerHeight, document.documentElement.clientHeight) : window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+  document.getElementById('SoundSelectDiv').height = WinHgtPhys;
+  document.getElementById('SoundSelectDiv').width = WinWidPhys;
+}
+DoResize();
+window.onresize = function(event) {
+  if (ResizeTimer) { clearTimeout(ResizeTimer); }
+  ResizeTimer = setTimeout('location.reload();',1200);
+}
+function ScanService () {
+  if (ScanIdx <= 7) {
+    document.getElementById('sl'+ScanIdx.toString()).style.backgroundColor = '#FF0000';
+    document.getElementById('sr'+ScanIdx.toString()).style.backgroundColor = '#FF0000';
+  }
+  if ( (ScanIdx <= 8) && (ScanIdx > 1) ) {
+    document.getElementById('sl'+(ScanIdx-1).toString()).style.backgroundColor = '#AA0000';
+    document.getElementById('sr'+(ScanIdx-1).toString()).style.backgroundColor = '#AA0000';
+  }
+  if ( (ScanIdx <= 9) && (ScanIdx > 2) ) {
+    document.getElementById('sl'+(ScanIdx-2).toString()).style.backgroundColor = '#660000';
+    document.getElementById('sr'+(ScanIdx-2).toString()).style.backgroundColor = '#660000';
+  }
+  if ( (ScanIdx <= 10) && (ScanIdx > 3) ) {
+    document.getElementById('sl'+(ScanIdx-3).toString()).style.backgroundColor = '#000000';
+    document.getElementById('sr'+(ScanIdx-3).toString()).style.backgroundColor = '#000000';
+  }
+  ScanIdx = ScanIdx + 1;
+  if (ScanIdx > 14) { ScanIdx = 1; }
+  ScanTimer = setTimeout('ScanService()',400);
+}
+function BlinkService () {
+  document.getElementById('b1').style.backgroundColor = BlinkColors[Math.floor(Math.random()*BlinkColors.length)];
+  document.getElementById('b2').style.backgroundColor = BlinkColors[Math.floor(Math.random()*BlinkColors.length)];
+  document.getElementById('b3').style.backgroundColor = BlinkColors[Math.floor(Math.random()*BlinkColors.length)];
+  BlinkTimer = setTimeout('BlinkService()',1000);
+}
+ScanService();
+BlinkService();
+
+var SrcRand = Math.floor(Math.random()*9999999).toString();
+var ColNum = 1
+var SoundsSel = '<table style="height:100%; width:100%;" border=0 colspacing=2 rowspacing=2>';
+for (SoundsIdx = 0; SoundsIdx < SoundNames.length; SoundsIdx++) {
+  if (ColNum==1) { SoundsSel = SoundsSel+"<tr style='height:"+(Math.floor(WinHgtPhys/4)-32	)+"px'>"; }
+  SoundFile = 'https://bedno.com/media/trek/'+SoundNames[SoundsIdx]+'.mp3?z='+SrcRand;
+  SoundName = SoundNames[SoundsIdx].replace(/_/,' ').replace(/Trek-/,'');
+  SoundsSel = SoundsSel+"<td onClick='SoundDo("+SoundsIdx.toString()+");' style='width:32%; background-color:"+ButtonColors[ButtonColor]+";";
+  ButtonColor = (ButtonColor + 4);
+  if (ButtonColor >= ButtonColors.length) { ButtonColor = ButtonColor - (ButtonColors.length-1); }
+  SoundsSel = SoundsSel+ "border:1px solid black; border-radius:28px 0px 0px 28px;'>";
+  SoundsSel = SoundsSel+"<div style='text-align:center'><font face='Arial' size=4>";
+  SoundsSel = SoundsSel+"<span id='pad"+SoundsIdx.toString()+"' style='color:black'><b>"+SoundName+"</b><span></font></div></td>";
+  try {
+    Sound[SoundsIdx] = new Audio(SoundFile);
+  } catch (err) { }
+  try {
+    Sound[SoundsIdx].preload = "auto";
+  } catch (err) { }
+  try {
+    Sound[SoundsIdx].volume = 1.0;
+  } catch (err) { }
+  ColNum++;
+  if (ColNum>3) { SoundsSel = SoundsSel+"</tr>"; ColNum = 1; }
+}
+SoundsSel = SoundsSel+'</table>';
+document.getElementById('SoundSelectDiv').innerHTML = SoundsSel;
+
+function BtnClear () {
+  for (SoundsIdx = 0; SoundsIdx < SoundNames.length; SoundsIdx++) {
+    document.getElementById('pad'+SoundsIdx.toString()).style.color = 'black';
+  }
+}
+
+function SoundDo (SoundDoIn) {
+  if (BtnTimer!=null) { clearTimeout(BtnTimer); BtnTimer=null; }
+  BtnTimer = setTimeout('BtnClear()',700);
+  document.getElementById('pad'+SoundDoIn.toString()).style.color = '#00FF00';
+  try {
+    if (Sound[SoundDoIn].paused) {
+      Sound[SoundDoIn].currentTime = 0;
+      Sound[SoundDoIn].play();
+    } else {
+      Sound[SoundDoIn].currentTime = 0;
+    }
+  } catch (err) { }
+}
+</script>
+</body>
+</html>
+
